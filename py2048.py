@@ -10,6 +10,7 @@ class App:
         self.clock = pygame.time.Clock()
         self.width, self.height = 800, 800
         self.board = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+        self.score = 0
 
     def start_game(self):
         self.on_init()
@@ -87,6 +88,10 @@ class App:
                     text = font.render(str(val), True, (0, 0, 0))
                     self.screen.blit(text, (x, y))
 
+                    font2 = pygame.font.SysFont('arial', 30, False, False)
+                    text2 = font2.render(f"Score: {self.score}", True, (0, 0, 0))
+                    self.screen.blit(text2, (100, 50))
+
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self.running = False
@@ -120,6 +125,7 @@ class App:
                         if self.board[row][col] == self.board[row-1][col]:
                             self.board[row-1][col] = 2 * self.board[row][col]
                             self.board[row][col] = 0
+                            self.update_score(self.board[row-1][col])
                 row+=1   
     
     def move_down(self):
@@ -135,6 +141,7 @@ class App:
                         if self.board[row][col] == self.board[row+1][col]:
                             self.board[row+1][col] = 2 * self.board[row][col]
                             self.board[row][col] = 0
+                            self.update_score(self.board[row+1][col] )
                 row-=1             
  
     def move_left(self):
@@ -150,6 +157,7 @@ class App:
                         if self.board[row][col] == self.board[row][col-1]:
                             self.board[row][col-1] = 2 * self.board[row][col]
                             self.board[row][col] = 0
+                            self.update_score(self.board[row][col-1])
                 col+=1
 
     def move_right(self):
@@ -165,6 +173,7 @@ class App:
                         if self.board[row][col] == self.board[row][col+1]:
                             self.board[row][col+1] = 2 * self.board[row][col]
                             self.board[row][col] = 0
+                            self.update_score(self.board[row][col+1])
                 col-=1  
 
     def piece_has_value(self, x, y):
@@ -176,16 +185,42 @@ class App:
         self.board[z][w] = val
 
     def update(self):
-        if self.check_game_over():
-            print("GameOver!!")
+        if self.check_win():
+            self.game_over("You win!!")
+
+        elif self.check_game_over():
+            self.game_over("GameOver!!")
             
         else:        
             self.spawn_piece()
             self.print_board()
             self.render() 
 
+    def check_win(self):
+        for i in range(4):
+            for n in range(4):
+                if self.board[i][n] == 1024:
+                    return True
+        return False
+            
     def check_game_over(self):
-        pass
+        for i in range(4):
+            for n in range(4):
+                if self.board[i][n] == 0:
+                    return False
+        return True
+    
+    def game_over(self, gameover_msg):
+        self.gameover = True
+        self.screen.fill(colors.BACKGROUND_COLOR)
+        
+        font = pygame.font.SysFont('arial', 70, False, False)
+        text = font.render(gameover_msg, True, (0, 0, 0))
+        self.screen.blit(text, (200, 350))
+        
+        font2 = pygame.font.SysFont('arial', 30, False, False)
+        text2 = font2.render(f"Score: {self.score}", True, (0, 0, 0))
+        self.screen.blit(text2, (300, 510))
 
     def render(self):
         self.screen.fill(colors.BACKGROUND_COLOR)
@@ -203,6 +238,9 @@ class App:
             if self.board[x][y] == 0:
                 valid = True
                 self.board[x][y] = spawn_value
+
+    def update_score(self, value):
+        self.score += value
 
     def print_board(self):
         for row in range(4):
