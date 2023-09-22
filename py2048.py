@@ -9,12 +9,12 @@ class App:
         self.screen = None
         self.clock = pygame.time.Clock()
         self.width, self.height = 800, 800
-        self.board = [[2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+        self.board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
         self.screen_color = pygame.Color(207, 195, 176)
 
     def start_game(self):
         self.on_init()
-        self.spawn_tile()
+        self.spawn_piece()
         self.draw_board()
         self.main_loop()
         self.on_cleanup()
@@ -46,15 +46,23 @@ class App:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
             self.move_up()
+            self.spawn_piece()
+            self.print_board()
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
             self.move_down()
+            self.spawn_piece()
+            self.print_board()
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
             self.move_left()
+            self.spawn_piece()
+            self.print_board()
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
             self.move_right()
+            self.spawn_piece()
+            self.print_board()
 
     def move_up(self):
         for col in range(4):
@@ -130,9 +138,19 @@ class App:
     def render(self):
         pass
 
-    def spawn_tile(self):
-        pass
+    def spawn_piece(self):
+        valid = False
+        
+        while not valid:
+            x = randrange(4)
+            y = randrange(4)
 
+            spawn_value = 2 if randrange(10) < 9 else 4
+
+            if self.board[x][y] == 0:
+                valid = True
+                self.board[x][y] = spawn_value
+                
     def print_board(self):
         for row in range(4):
             print(self.board[row])
@@ -141,7 +159,6 @@ class App:
         while self.running:
             for event in pygame.event.get():
                 self.on_event(event)
-                self.print_board()
 
             self.update()
             self.render()
