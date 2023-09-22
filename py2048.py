@@ -11,6 +11,18 @@ class App:
         self.width, self.height = 800, 800
         self.board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
         self.screen_color = pygame.Color(207, 195, 176)
+        self.render = False
+        self.color2 = pygame.Color(245, 230, 200)
+        self.color4 = pygame.Color(245, 220, 175)
+        self.color8 = pygame.Color(245, 210, 160)
+        self.color16 = pygame.Color(245, 200, 145)
+        self.color32 = pygame.Color(245, 190, 130)
+        self.color64 = pygame.Color(245, 180, 115)
+        self.color128 = pygame.Color(245, 140, 100)
+        self.color256 = pygame.Color(245, 130, 85)
+        self.color512 = pygame.Color(245, 110, 70)
+        self.color1024 = pygame.Color(245, 80, 55)
+        self.color2048 = pygame.Color(245, 60, 40)
 
     def start_game(self):
         self.on_init()
@@ -39,6 +51,54 @@ class App:
         pygame.draw.line(self.screen, (0,0,0), (100,self.height-100), (self.width-100, self.height-100), width=3)
         pygame.draw.line(self.screen, (0,0,0), (self.width-100, self.height-100), (self.width-100, 100), width=3)
         pygame.draw.line(self.screen, (0,0,0), (100,100), (self.width-100, 100), width=3)
+
+        self.draw_numbers_on_board()
+
+    def draw_numbers_on_board(self):
+        for col in range(4):
+            for row in range(4):
+
+                val = self.board[col][row]
+
+                if val != 0:
+                    x = row * 150 + 145
+                    y = col * 150 + 145
+                    
+                    rect = pygame.Rect(x-43, y-43, 147, 147)
+                    if val == 2:
+                        pygame.draw.rect(self.screen, self.color2, rect)
+                        x+=17
+                    if val == 4:
+                        pygame.draw.rect(self.screen, self.color4, rect)
+                        x+=17
+                    if val == 8:
+                        pygame.draw.rect(self.screen, self.color8, rect)
+                        x+=17
+                    if val == 16:
+                        pygame.draw.rect(self.screen, self.color16, rect)
+                    if val == 32:
+                        pygame.draw.rect(self.screen, self.color32, rect)
+                    if val == 64:
+                        pygame.draw.rect(self.screen, self.color64, rect)
+                    if val == 128:
+                        pygame.draw.rect(self.screen, self.color128, rect)
+                        x-=15
+                    if val == 256:
+                        pygame.draw.rect(self.screen, self.color256, rect)  
+                        x-=15
+                    if val == 512:
+                        pygame.draw.rect(self.screen, self.color512, rect)
+                        x-=15
+                    if val == 1024:
+                        pygame.draw.rect(self.screen, self.color1024, rect)
+                        x-=30
+                    if val == 2048:
+                        pygame.draw.rect(self.screen, self.color2048, rect)
+                        x-=30
+                    
+                    font = pygame.font.SysFont('arial', 55, False, False)
+                    text = font.render(str(val), True, (0, 0, 0))
+                    self.screen.blit(text, (x, y))
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -135,8 +195,10 @@ class App:
     def update(self):
         pass
 
-    def render(self):
-        pass
+    def on_render(self):
+        self.screen.fill(self.screen_color)
+        self.draw_board()   
+        self.render = False 
 
     def spawn_piece(self):
         valid = False
@@ -161,7 +223,9 @@ class App:
                 self.on_event(event)
 
             self.update()
-            self.render()
+
+            if (self.render):
+                self.on_render()
 
             pygame.display.flip()
             self.clock.tick(60)
