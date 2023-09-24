@@ -55,10 +55,10 @@ class App:
                     rect = pygame.Rect(x-43, y-43, 147, 147)
                     if val == 2:
                         pygame.draw.rect(self.screen, colors.COLOR2, rect)
-                        x+=17
+                        x+=15
                     if val == 4:
                         pygame.draw.rect(self.screen, colors.COLOR4, rect)
-                        x+=17
+                        x+=15
                     if val == 8:
                         pygame.draw.rect(self.screen, colors.COLOR8, rect)
                         x+=17
@@ -193,7 +193,6 @@ class App:
             
         else:        
             self.spawn_piece()
-            self.print_board()
             self.render() 
 
     def check_win(self):
@@ -241,10 +240,6 @@ class App:
 
     def update_score(self, value):
         self.score += value
-
-    def print_board(self):
-        for row in range(4):
-            print(self.board[row])
 
     def main_loop(self):
 
